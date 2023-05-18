@@ -1,34 +1,41 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import {HeaderComponent} from "./layout/header.component";
-import { FooterComponent } from "./layout/footer.component";
-import {UsersComponent} from "./users/users.component";
+import { filter, interval, map } from 'rxjs';
+import { HeaderComponent } from './layout/header.component';
+import { FooterComponent } from './layout/footer.component';
+import { UsersComponent } from './users/users.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, HeaderComponent, FooterComponent, UsersComponent],
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  imports: [HeaderComponent, FooterComponent, UsersComponent],
+  template: `
+    <app-header></app-header>
+
+    <div class="body">
+      <app-users></app-users>
+    </div>
+
+    <app-footer></app-footer>
+  `,
+  styleUrls: ['./app.component.scss'],
 })
 export class AppComponent {
-  message: string;
-  title = 'FON';
-  allUsers = ['Marko', 'Jovan', 'Ana'];
-
   constructor() {
-    this.message = 'Hello World';
-  }
+    // let count = 0;
+    // setInterval(() => {
+    //   count++;
+    //   if (count % 2 === 0) {
+    //     console.log('m')
+    //   }
+    // }, 2_000);
 
-  changeTitle(): void {
-    this.title = 'SILAB';
-  }
+    const numbers$ = interval(2_000);
+    const evenNumbers$ = numbers$.pipe(filter((i) => i % 2 === 0));
+    const numbersGreaterThanTen$ = numbers$.pipe(
+      map((i) => i + 1),
+      filter((i) => i > 10)
+    );
 
-  updateMessage(message: string): void {
-    this.message = message;
-  }
-
-  onLogUser(user: string): void {
-    console.log('user clicked', user);
+    evenNumbers$.subscribe((i) => console.log(i));
   }
 }
