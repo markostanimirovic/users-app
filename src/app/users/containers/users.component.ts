@@ -1,32 +1,20 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { NgIf } from '@angular/common';
 import { User } from '../user.model';
 import { UsersService } from '../users.service';
+import { UserListComponent } from '../components/user-list.component';
+import { SearchBoxComponent } from '../../shared/search-box.component';
 
 @Component({
-  selector: 'app-users',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterLink],
+  imports: [NgIf, UserListComponent, SearchBoxComponent],
   template: `
     <h1>Users</h1>
 
-    <input
-      type="text"
-      placeholder="Search..."
-      [ngModel]="query"
-      (ngModelChange)="onQueryChange($event)"
-    />
+    <app-search-box (queryChange)="onQueryChange($event)" />
 
     <p *ngIf="isLoading">Loading...</p>
-    <ul>
-      <li *ngFor="let user of filteredUsers">
-        <a routerLink="/users/{{ user.id }}">
-          {{ user.firstName + ' ' + user.lastName }}
-        </a>
-      </li>
-    </ul>
+    <app-user-list [users]="filteredUsers" />
   `,
 })
 export class UsersComponent implements OnInit {
@@ -35,9 +23,6 @@ export class UsersComponent implements OnInit {
   users: User[] = [];
   filteredUsers: User[] = [];
   isLoading = true;
-  query = '';
-
-  // constructor(private usersService: UsersService) {}
 
   ngOnInit() {
     this.usersService.getAll().subscribe((users) => {

@@ -6,9 +6,14 @@ import { UsersComponent } from './users/containers/users.component';
 import { UserEditComponent } from './users/containers/user-edit.component';
 
 const appRoutes: Route[] = [
-  { path: '', component: HomeComponent },
-  { path: 'users', component: UsersComponent },
-  { path: 'users/:id', component: UserEditComponent },
+  { path: '', component: HomeComponent, title: 'Home' },
+  {
+    path: 'users',
+    children: [
+      { path: '', component: UsersComponent, title: 'Users' },
+      { path: ':id', component: UserEditComponent, title: 'User Edit' },
+    ],
+  },
   { path: '**', redirectTo: '/' },
 ];
 
